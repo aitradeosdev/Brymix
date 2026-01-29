@@ -53,13 +53,12 @@ A production-ready system for validating propfirm trading challenges with MetaTr
 ## 📦 Quick Start
 
 ### Prerequisites
-- Windows OS (MT5 requirement)
+- Windows OS (Local) or Windows VPS (Production)
 - Python 3.9+
-- Node.js 16+
 - MetaTrader 5 installed
 - Redis server
 
-### Installation
+### Local Development
 
 ```bash
 # 1. Install Redis
@@ -82,6 +81,30 @@ cd brymix-dashboard
 npm run dev
 ```
 
+### VPS Production Deployment
+
+```bash
+# 1. Clone repository
+git clone https://github.com/aitradeosdev/Brymix.git
+cd Brymix
+
+# 2. Install dependencies
+python -m pip install -r requirements.txt
+
+# 3. Create .env file
+copy .env.example .env
+# Edit .env with your settings
+
+# 4. Initialize database
+python -c "from app.database import Base, engine; Base.metadata.create_all(bind=engine)"
+
+# 5. Create API key
+python manage_keys.py create "Production API Key"
+
+# 6. Start services
+start_all.bat
+```
+
 ### Create API Key
 
 1. Register at: http://localhost:3000/register
@@ -93,27 +116,43 @@ npm run dev
 
 ### Access Points
 
+**Local Development:**
 - **Dashboard**: http://localhost:3000
 - **API**: http://localhost:8000
 - **API Docs**: http://localhost:8000/docs
+
+**VPS Production:**
+- **API**: http://YOUR-VPS-IP:8000
+- **API Docs**: http://YOUR-VPS-IP:8000/docs
+- **Health Check**: http://YOUR-VPS-IP:8000/health
 
 ## 🔧 Configuration
 
 ### Backend (.env)
 ```env
-# MT5
+# MT5 Configuration
 MT5_PATH=C:\Program Files\MetaTrader 5\terminal64.exe
 MT5_POOL_SIZE=3
+MT5_TIMEOUT=30
 
-# Security
-WEBHOOK_SECRET=your_secure_secret
-API_SECRET_KEY=your_api_secret
+# Security (Generate secure values!)
+WEBHOOK_SECRET=your_secure_webhook_secret_here_64_chars_long
+API_SECRET_KEY=your_api_secret_key_here_64_chars_long
+ENCRYPTION_KEY=your_32_character_encryption_key_here
+
+# API Configuration
+API_HOST=0.0.0.0  # For VPS external access
+API_PORT=8000
 
 # Redis
 REDIS_URL=redis://localhost:6379/0
 
-# Database
+# Database (SQLite - Production Ready)
 DATABASE_URL=sqlite:///./brymix.db
+
+# Celery
+CELERY_BROKER_URL=redis://localhost:6379/0
+CELERY_RESULT_BACKEND=redis://localhost:6379/0
 ```
 
 ### Dashboard (.env)
@@ -241,6 +280,15 @@ brymix/
 
 ## 🚨 Troubleshooting
 
+### VPS Deployment Issues
+```bash
+# Check if port 8000 is open
+netsh advfirewall firewall add rule name="Brymix API" dir=in action=allow protocol=TCP localport=8000
+
+# Test external access
+curl http://YOUR-VPS-IP:8000/health
+```
+
 ### Redis Connection Failed
 ```bash
 # Check if Redis is running
@@ -265,6 +313,7 @@ cd server && npm install
 - Verify MT5_PATH in .env
 - Check MT5 credentials
 - Ensure broker provides 1-min bars
+- Make sure MT5 is logged into an account
 
 ## 📈 Performance
 

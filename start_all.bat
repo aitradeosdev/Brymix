@@ -15,7 +15,7 @@ echo [OK] Redis running
 
 echo.
 echo Starting Celery Worker...
-start "Brymix Worker" cmd /k "cd /d %~dp0 && celery -A app.celery_worker.celery_app worker --loglevel=info --pool=solo"
+start "Brymix Worker" cmd /k "cd /d %~dp0 && python -m celery -A app.celery_worker.celery_app worker --loglevel=info --pool=solo"
 
 echo.
 echo Waiting for worker to initialize...
@@ -39,7 +39,8 @@ echo - Redis Server (background)
 echo - Celery Worker (new window)
 echo - API Server (new window)
 echo.
-echo Dashboard: http://localhost:8000
+echo Dashboard: http://localhost:8000 (Local)
+echo API: http://YOUR-VPS-IP:8000 (External)
 echo.
 echo To stop all services, close the worker and API windows
 echo ============================================================
