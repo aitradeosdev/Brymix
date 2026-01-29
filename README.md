@@ -66,7 +66,8 @@ A production-ready system for validating propfirm trading challenges with MetaTr
 call install_redis_simple.bat
 
 # 2. Setup Backend
-call setup_phase2.bat
+python -m pip install -r requirements.txt
+
 
 # 3. Setup Dashboard
 cd brymix-dashboard
@@ -87,10 +88,7 @@ npm run dev
 2. Login and create API key from dashboard
 3. Use API key for challenge validation
 
-### Test the System
-
-```bash
-python test_phase2.py
+ test_phase2.py
 ```
 
 ### Access Points
