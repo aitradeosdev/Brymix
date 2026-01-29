@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { motion } from 'framer-motion';
 import { User, Building, Mail, Lock, Save, AlertCircle, CheckCircle, Shield, Smartphone } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
@@ -28,11 +28,7 @@ const Settings: React.FC = () => {
 
   const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000/api';
 
-  useEffect(() => {
-    fetchTwoFactorStatus();
-  }, []);
-
-  const fetchTwoFactorStatus = async () => {
+  const fetchTwoFactorStatus = useCallback(async () => {
     try {
       const response = await axios.get(`${API_URL}/2fa/status`, {
         headers: { Authorization: `Bearer ${state.accessToken}` }
@@ -41,7 +37,11 @@ const Settings: React.FC = () => {
     } catch (err) {
       console.error('Failed to fetch 2FA status');
     }
-  };
+  }, [API_URL, state.accessToken]);
+
+  useEffect(() => {
+    fetchTwoFactorStatus();
+  }, [fetchTwoFactorStatus]);
 
   const handleDisableTwoFactor = async () => {
     const password = prompt('Enter your password to disable 2FA:');
