@@ -12,6 +12,7 @@ const authRoutes = require('./routes/auth');
 const dashboardRoutes = require('./routes/dashboard');
 const apiKeyRoutes = require('./routes/apiKeys');
 const twoFactorRoutes = require('./routes/twoFactor');
+const docsRoutes = require('./routes/docs');
 
 const app = express();
 
@@ -102,6 +103,7 @@ app.use('/api/auth', authLimiter, authRoutes);
 app.use('/api/dashboard', dashboardRoutes);
 app.use('/api/keys', apiKeyRoutes);
 app.use('/api/2fa', twoFactorRoutes);
+app.use('/api/docs', docsRoutes);
 
 // Health check
 app.get('/api/health', (req, res) => {

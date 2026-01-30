@@ -1,8 +1,89 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Code, Key, Webhook, CheckCircle, AlertTriangle, Copy } from 'lucide-react';
+import { Code, Key, Webhook, CheckCircle, AlertTriangle, Copy, Lock } from 'lucide-react';
+import axios from 'axios';
 
 const Documentation: React.FC = () => {
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [password, setPassword] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
+
+  const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000/api';
+
+  useEffect(() => {
+    // Check if already authenticated
+    const authToken = localStorage.getItem('docs_auth_token');
+    if (authToken) {
+      setIsAuthenticated(true);
+    }
+  }, []);
+
+  const handlePasswordSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
+    setError('');
+
+    try {
+      const response = await axios.post(`${API_URL}/docs/auth`, {
+        password
+      });
+
+      if (response.data.success) {
+        localStorage.setItem('docs_auth_token', response.data.token);
+        setIsAuthenticated(true);
+      }
+    } catch (err: any) {
+      setError(err.response?.data?.error || 'Invalid password');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  if (!isAuthenticated) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <motion.div
+          initial={{ opacity: 0, scale: 0.95 }}
+          animate={{ opacity: 1, scale: 1 }}
+          className="glass-card max-w-md w-full"
+        >
+          <div className="text-center mb-6">
+            <Lock className="w-12 h-12 text-blue-400 mx-auto mb-4" />
+            <h1 className="text-2xl font-bold text-white mb-2">Protected Documentation</h1>
+            <p className="text-white/70">Enter password to access API documentation</p>
+          </div>
+
+          <form onSubmit={handlePasswordSubmit} className="space-y-4">
+            <div>
+              <input
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                placeholder="Documentation password"
+                className="glass-input w-full"
+                required
+              />
+            </div>
+
+            {error && (
+              <div className="glass bg-red-500/20 border-red-500/30 p-3 rounded-xl">
+                <p className="text-red-200 text-sm">{error}</p>
+              </div>
+            )}
+
+            <button
+              type="submit"
+              disabled={loading}
+              className="glass-button bg-blue-500/20 hover:bg-blue-500/30 w-full disabled:opacity-50"
+            >
+              {loading ? 'Verifying...' : 'Access Documentation'}
+            </button>
+          </form>
+        </motion.div>
+      </div>
+    );
+  }
   const copyToClipboard = (text: string) => {
     navigator.clipboard.writeText(text);
   };
@@ -58,7 +139,7 @@ const Documentation: React.FC = () => {
           </div>
           <div className="glass p-4 rounded-xl">
             <h3 className="text-white font-medium mb-2">2. Base URL</h3>
-            <CodeBlock language="text">https://api.brymix.com</CodeBlock>
+            <CodeBlock language="text">http://69.10.56.66:8000</CodeBlock>
           </div>
         </div>
       </motion.div>
@@ -133,7 +214,7 @@ const Documentation: React.FC = () => {
           <div>
             <h3 className="text-white font-medium mb-2">cURL Example</h3>
             <CodeBlock language="bash">
-{`curl -X POST https://api.brymix.com/api/v1/check \\
+{`curl -X POST http://69.10.56.66:8000/api/v1/check \\
   -H "Content-Type: application/json" \\
   -H "X-API-Key: your_api_key_here" \\
   -d '{
