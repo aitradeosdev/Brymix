@@ -208,7 +208,22 @@ const Documentation: React.FC = () => {
           <div>
             <h3 className="text-white font-medium mb-2">cURL Example</h3>
             <CodeBlock language="bash">
-{`curl -X POST http://69.10.56.66:8000/api/v1/check \\
+{showBaseUrl ? `curl -X POST http://69.10.56.66:8000/api/v1/check \\
+  -H "Content-Type: application/json" \\
+  -H "X-API-Key: your_api_key_here" \\
+  -d '{
+    "user_id": "user_123",
+    "challenge_id": "challenge_456",
+    "mt5_login": "12345678", 
+    "mt5_password": "password123",
+    "mt5_server": "Broker-Server",
+    "initial_balance": 100000.0,
+    "rules": {
+      "max_drawdown_percent": 10.0,
+      "profit_target_percent": 10.0
+    },
+    "callback_url": "https://yourapp.com/webhook"
+  }'` : `curl -X POST http://example.com/api/v1/check \\
   -H "Content-Type: application/json" \\
   -H "X-API-Key: your_api_key_here" \\
   -d '{
