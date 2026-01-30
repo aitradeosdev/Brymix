@@ -167,17 +167,23 @@ app.use('*', (req, res) => {
 
 const PORT = process.env.PORT || 5000;
 
-app.listen(PORT, () => {
-  console.log(`\n🚀 Brymix Dashboard Server running on port ${PORT}`);
-  console.log(`🌍 Environment: ${process.env.NODE_ENV || 'development'}`);
-  
-  if (process.env.NODE_ENV === 'development') {
-    console.log(`\n🔧 Development Mode Features:`);
-    console.log(`   • Enhanced error logging`);
-    console.log(`   • MongoDB debug mode`);
-    console.log(`   • Relaxed rate limiting (${rateLimitMax} req/15min)`);
-    console.log(`   • CORS origins: ${corsOrigins.join(', ')}`);
-    console.log(`   • API accessible at: http://localhost:${PORT}/api`);
-    console.log(`   • Health check: http://localhost:${PORT}/api/health\n`);
-  }
-});
+// Only start server if not in Vercel environment
+if (process.env.NODE_ENV !== 'production' || !process.env.VERCEL) {
+  app.listen(PORT, () => {
+    console.log(`\n🚀 Brymix Dashboard Server running on port ${PORT}`);
+    console.log(`🌍 Environment: ${process.env.NODE_ENV || 'development'}`);
+    
+    if (process.env.NODE_ENV === 'development') {
+      console.log(`\n🔧 Development Mode Features:`);
+      console.log(`   • Enhanced error logging`);
+      console.log(`   • MongoDB debug mode`);
+      console.log(`   • Relaxed rate limiting (${rateLimitMax} req/15min)`);
+      console.log(`   • CORS origins: ${corsOrigins.join(', ')}`);
+      console.log(`   • API accessible at: http://localhost:${PORT}/api`);
+      console.log(`   • Health check: http://localhost:${PORT}/api/health\n`);
+    }
+  });
+}
+
+// Export the app for Vercel
+module.exports = app;
