@@ -1,89 +1,21 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Code, Key, Webhook, CheckCircle, AlertTriangle, Copy, Lock } from 'lucide-react';
-import axios from 'axios';
+import { Code, Key, Webhook, CheckCircle, AlertTriangle, Copy, Lock, Eye, EyeOff } from 'lucide-react';
 
 const Documentation: React.FC = () => {
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [showBaseUrl, setShowBaseUrl] = useState(false);
   const [password, setPassword] = useState('');
-  const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
-  const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000/api';
-
-  useEffect(() => {
-    // Check if already authenticated
-    const authToken = localStorage.getItem('docs_auth_token');
-    if (authToken) {
-      setIsAuthenticated(true);
-    }
-  }, []);
-
-  const handlePasswordSubmit = async (e: React.FormEvent) => {
+  const handlePasswordSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    setLoading(true);
-    setError('');
-
-    try {
-      const response = await axios.post(`${API_URL}/docs/auth`, {
-        password
-      });
-
-      if (response.data.success) {
-        localStorage.setItem('docs_auth_token', response.data.token);
-        setIsAuthenticated(true);
-      }
-    } catch (err: any) {
-      setError(err.response?.data?.error || 'Invalid password');
-    } finally {
-      setLoading(false);
+    if (password === 'brymix2024') {
+      setShowBaseUrl(true);
+      setError('');
+    } else {
+      setError('Invalid password');
     }
   };
-
-  if (!isAuthenticated) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <motion.div
-          initial={{ opacity: 0, scale: 0.95 }}
-          animate={{ opacity: 1, scale: 1 }}
-          className="glass-card max-w-md w-full"
-        >
-          <div className="text-center mb-6">
-            <Lock className="w-12 h-12 text-blue-400 mx-auto mb-4" />
-            <h1 className="text-2xl font-bold text-white mb-2">Protected Documentation</h1>
-            <p className="text-white/70">Enter password to access API documentation</p>
-          </div>
-
-          <form onSubmit={handlePasswordSubmit} className="space-y-4">
-            <div>
-              <input
-                type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                placeholder="Documentation password"
-                className="glass-input w-full"
-                required
-              />
-            </div>
-
-            {error && (
-              <div className="glass bg-red-500/20 border-red-500/30 p-3 rounded-xl">
-                <p className="text-red-200 text-sm">{error}</p>
-              </div>
-            )}
-
-            <button
-              type="submit"
-              disabled={loading}
-              className="glass-button bg-blue-500/20 hover:bg-blue-500/30 w-full disabled:opacity-50"
-            >
-              {loading ? 'Verifying...' : 'Access Documentation'}
-            </button>
-          </form>
-        </motion.div>
-      </div>
-    );
-  }
   const copyToClipboard = (text: string) => {
     navigator.clipboard.writeText(text);
   };
@@ -139,7 +71,45 @@ const Documentation: React.FC = () => {
           </div>
           <div className="glass p-4 rounded-xl">
             <h3 className="text-white font-medium mb-2">2. Base URL</h3>
-            <CodeBlock language="text">http://69.10.56.66:8000</CodeBlock>
+            {!showBaseUrl ? (
+              <div className="space-y-3">
+                <div className="glass bg-yellow-500/20 border-yellow-500/30 p-3 rounded-xl flex items-center">
+                  <Lock className="w-4 h-4 text-yellow-400 mr-2" />
+                  <span className="text-yellow-200 text-sm">Base URL is password protected</span>
+                </div>
+                <form onSubmit={handlePasswordSubmit} className="flex gap-2">
+                  <input
+                    type="password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    placeholder="Enter password"
+                    className="glass-input flex-1 text-sm"
+                    required
+                  />
+                  <button
+                    type="submit"
+                    className="glass-button bg-blue-500/20 hover:bg-blue-500/30 px-3 py-1 text-sm flex items-center"
+                  >
+                    <Eye className="w-3 h-3 mr-1" />
+                    Show
+                  </button>
+                </form>
+                {error && (
+                  <p className="text-red-400 text-xs">{error}</p>
+                )}
+              </div>
+            ) : (
+              <div className="space-y-2">
+                <CodeBlock language="text">http://69.10.56.66:8000</CodeBlock>
+                <button
+                  onClick={() => setShowBaseUrl(false)}
+                  className="glass-button bg-gray-500/20 hover:bg-gray-500/30 px-2 py-1 text-xs flex items-center"
+                >
+                  <EyeOff className="w-3 h-3 mr-1" />
+                  Hide
+                </button>
+              </div>
+            )}
           </div>
         </div>
       </motion.div>
