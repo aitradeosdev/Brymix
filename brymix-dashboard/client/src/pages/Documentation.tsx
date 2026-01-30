@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Code, Key, Webhook, CheckCircle, AlertTriangle, Copy, Lock, Eye, EyeOff } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
-import bcrypt from 'bcryptjs';
 
 const Documentation: React.FC = () => {
   const { state } = useAuth();
