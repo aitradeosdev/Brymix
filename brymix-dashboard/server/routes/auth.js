@@ -253,4 +253,22 @@ router.put('/password', auth, [
   }
 });
 
+// Verify password for documentation access
+router.post('/verify-password', auth, async (req, res) => {
+  try {
+    const { password } = req.body;
+    const user = await User.findById(req.user._id).select('+password');
+    
+    const isMatch = await user.comparePassword(password);
+    if (isMatch) {
+      res.json({ success: true });
+    } else {
+      res.status(401).json({ error: 'Invalid password' });
+    }
+  } catch (error) {
+    console.error('Password verification error:', error);
+    res.status(500).json({ error: 'Server error' });
+  }
+});
+
 module.exports = router;

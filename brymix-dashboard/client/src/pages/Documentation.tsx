@@ -1,19 +1,43 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Code, Key, Webhook, CheckCircle, AlertTriangle, Copy, Lock, Eye, EyeOff } from 'lucide-react';
+import { useAuth } from '../contexts/AuthContext';
+import bcrypt from 'bcryptjs';
 
 const Documentation: React.FC = () => {
+  const { state } = useAuth();
   const [showBaseUrl, setShowBaseUrl] = useState(false);
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
 
-  const handlePasswordSubmit = (e: React.FormEvent) => {
+  const handlePasswordSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (password === 'brymix2024') {
-      setShowBaseUrl(true);
-      setError('');
-    } else {
-      setError('Invalid password');
+    setLoading(true);
+    setError('');
+
+    try {
+      // Verify password against user's actual password
+      const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000/api';
+      const response = await fetch(`${API_URL}/auth/verify-password`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${state.accessToken}`
+        },
+        body: JSON.stringify({ password })
+      });
+
+      if (response.ok) {
+        setShowBaseUrl(true);
+        setError('');
+      } else {
+        setError('Invalid password');
+      }
+    } catch (err) {
+      setError('Error verifying password');
+    } finally {
+      setLoading(false);
     }
   };
   const copyToClipboard = (text: string) => {
@@ -88,10 +112,11 @@ const Documentation: React.FC = () => {
                   />
                   <button
                     type="submit"
-                    className="glass-button bg-blue-500/20 hover:bg-blue-500/30 px-3 py-1 text-sm flex items-center"
+                    disabled={loading}
+                    className="glass-button bg-blue-500/20 hover:bg-blue-500/30 px-3 py-1 text-sm flex items-center disabled:opacity-50"
                   >
                     <Eye className="w-3 h-3 mr-1" />
-                    Show
+                    {loading ? 'Verifying...' : 'Show'}
                   </button>
                 </form>
                 {error && (

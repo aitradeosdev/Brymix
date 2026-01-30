@@ -25,12 +25,12 @@ const Navigation: React.FC = () => {
     { path: '/dashboard', icon: LayoutDashboard, label: 'Dashboard' },
     { path: '/api-keys', icon: Key, label: 'API Keys' },
     { path: '/analytics', icon: BarChart3, label: 'Analytics' },
-    { path: '/docs', icon: FileText, label: 'Documentation' },
+    { path: '/documentation', icon: FileText, label: 'Documentation' },
     { path: '/settings', icon: Settings, label: 'Settings' },
   ];
 
   return (
-    <div className="glass-nav fixed left-6 top-6 bottom-6 w-64 z-40">
+    <div className="glass-nav fixed left-6 top-6 bottom-6 w-64 z-40 hidden md:block">
       <div className="p-6">
         {/* Logo/Brand */}
         <div className="mb-8">
