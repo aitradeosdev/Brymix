@@ -89,7 +89,7 @@ const AppRoutes: React.FC = () => {
         } 
       />
       <Route 
-        path="/docs" 
+        path="/documentation" 
         element={
           <ProtectedRoute>
             <Documentation />
