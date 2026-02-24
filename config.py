@@ -5,8 +5,10 @@ import sys
 import os
 
 class Settings(BaseSettings):
-    # MT5
+    # MT5 - Support multiple terminal paths for true parallel processing
     mt5_path: str = "C:\\Program Files\\MetaTrader 5\\terminal64.exe"
+    mt5_path_2: Optional[str] = None  # Second MT5 installation
+    mt5_path_3: Optional[str] = None  # Third MT5 installation
     mt5_timeout: int = 30
     mt5_pool_size: int = 3
     

@@ -41,7 +41,7 @@ class MT5Client:
             logger.error(f"Failed to get account info: {mt5.last_error()}")
             return None
         
-        return {
+        info = {
             "balance": account_info.balance,
             "equity": account_info.equity,
             "profit": account_info.profit,
@@ -49,6 +49,9 @@ class MT5Client:
             "margin_free": account_info.margin_free,
             "currency": account_info.currency,
         }
+        
+        logger.info(f"Account Info: Balance={info['balance']}, Equity={info['equity']}, Profit={info['profit']}")
+        return info
     
     def get_deals_history(self, from_date: Optional[datetime] = None) -> List[Any]:
         """Get all deals from history"""
@@ -56,10 +59,23 @@ class MT5Client:
             from_date = datetime(2000, 1, 1)
         
         to_date = datetime.now()
-        deals = mt5.history_deals_get(from_date, to_date)
+        
+        # Try to get all deals without date filter first
+        deals = mt5.history_deals_get(0, to_date)
+        
+        if deals is None or len(deals) == 0:
+            # Fallback to date range
+            deals = mt5.history_deals_get(from_date, to_date)
         
         if deals is None:
-            logger.error(f"Failed to get deals: {mt5.last_error()}")
+            error = mt5.last_error()
+            logger.error(f"Failed to get deals: {error}")
+            logger.info("Trying alternative method: history_orders_total()")
+            
+            # Check if there are any orders at all
+            orders_total = mt5.history_orders_total(from_date, to_date)
+            logger.info(f"Total orders in history: {orders_total}")
+            
             return []
         
         logger.info(f"Retrieved {len(deals)} deals")
@@ -118,6 +134,17 @@ class MT5Client:
         closed_positions = [p for p in positions.values() if p["open_time"] and p["close_time"]]
         logger.info(f"Retrieved {len(closed_positions)} closed positions from {len(deals)} deals")
         return closed_positions
+    
+    def get_ticks(self, symbol: str, from_date: datetime, to_date: datetime) -> Optional[Any]:
+        """Get historical tick data for a symbol"""
+        ticks = mt5.copy_ticks_range(symbol, from_date, to_date, mt5.COPY_TICKS_ALL)
+        
+        if ticks is None or len(ticks) == 0:
+            logger.warning(f"No ticks found for {symbol} from {from_date} to {to_date}")
+            return None
+        
+        logger.info(f"Retrieved {len(ticks)} ticks for {symbol}")
+        return ticks
     
     def get_rates(self, symbol: str, timeframe: int, from_date: datetime, to_date: datetime) -> Optional[Any]:
         """Get historical rates (bars) for a symbol"""

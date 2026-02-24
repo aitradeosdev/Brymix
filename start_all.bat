@@ -1,9 +1,19 @@
 @echo off
 echo ============================================================
-echo BRYMIX PHASE 2 - STARTING ALL SERVICES
+echo BRYMIX - STARTING ALL SERVICES
 echo ============================================================
 echo.
 
+echo Checking terminal configuration...
+python check_terminals.py
+if %errorlevel% neq 0 (
+    echo.
+    echo ERROR: Terminal check failed!
+    pause
+    exit /b 1
+)
+
+echo.
 echo Checking Redis...
 redis-cli ping >nul 2>&1
 if %errorlevel% neq 0 (
@@ -15,7 +25,7 @@ echo [OK] Redis running
 
 echo.
 echo Starting Celery Worker...
-start "Brymix Worker" cmd /k "cd /d %~dp0 && python -m celery -A app.celery_worker.celery_app worker --loglevel=info --pool=solo"
+start "Brymix Worker" cmd /k "cd /d %~dp0 && python -m celery -A app.celery_worker.celery_app worker --loglevel=info --pool=solo --concurrency=1"
 
 echo.
 echo Waiting for worker to initialize...

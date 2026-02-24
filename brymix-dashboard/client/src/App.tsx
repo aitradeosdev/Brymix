@@ -9,6 +9,8 @@ import ApiKeys from './pages/ApiKeys';
 import Analytics from './pages/Analytics';
 import Settings from './pages/Settings';
 import Documentation from './pages/Documentation';
+import JobsHistory from './pages/JobsHistory';
+import JobDetails from './pages/JobDetails';
 import DashboardLayout from './components/DashboardLayout';
 import './index.css';
 
@@ -85,6 +87,22 @@ const AppRoutes: React.FC = () => {
         element={
           <ProtectedRoute>
             <Settings />
+          </ProtectedRoute>
+        } 
+      />
+      <Route 
+        path="/jobs" 
+        element={
+          <ProtectedRoute>
+            <JobsHistory />
+          </ProtectedRoute>
+        } 
+      />
+      <Route 
+        path="/jobs/:jobId" 
+        element={
+          <ProtectedRoute>
+            <JobDetails />
           </ProtectedRoute>
         } 
       />

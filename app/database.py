@@ -4,7 +4,11 @@ from sqlalchemy.orm import sessionmaker
 from datetime import datetime
 from config import settings
 
-engine = create_engine(settings.database_url)
+engine = create_engine(
+    settings.database_url,
+    connect_args={"check_same_thread": False},  # Fix SQLite thread safety
+    pool_pre_ping=True
+)
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 Base = declarative_base()
 

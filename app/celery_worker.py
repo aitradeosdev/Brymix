@@ -34,16 +34,21 @@ def process_challenge_check(self, job_id: str, job_data: dict):
         
         # Get MT5 terminal from pool
         terminal = None
+        loop = None
         try:
             import asyncio
             loop = asyncio.new_event_loop()
             asyncio.set_event_loop(loop)
+            
+            # Get available terminal
             terminal = loop.run_until_complete(mt5_pool.get_terminal())
             
             if not terminal:
-                raise Exception("No available MT5 terminals")
+                raise Exception("No available MT5 terminals in pool")
             
-            # Connect to MT5
+            logger.info(f"Using terminal {terminal.id} for job {job_id}")
+            
+            # Connect terminal to MT5 account
             connected = loop.run_until_complete(
                 mt5_pool.connect_terminal(
                     terminal,
@@ -54,14 +59,15 @@ def process_challenge_check(self, job_id: str, job_data: dict):
             )
             
             if not connected:
-                raise Exception("Failed to connect to MT5")
+                raise Exception(f"Failed to connect terminal {terminal.id} to MT5")
             
-            # Run rule checker
+            # Run rule checker (MT5 is already initialized and logged in)
             from app.mt5_client import MT5Client
             from app.models import CheckRequest
             
-            mt5_client = MT5Client(settings.mt5_path, settings.mt5_timeout)
-            mt5_client.initialize()
+            # Create MT5Client without re-initializing (already done by pool)
+            mt5_client = MT5Client(terminal.path, settings.mt5_timeout)
+            mt5_client.connected = True  # Mark as already connected
             
             checker = RuleChecker(mt5_client)
             request = CheckRequest(**job_data)
@@ -105,8 +111,9 @@ def process_challenge_check(self, job_id: str, job_data: dict):
             return result_dict
             
         finally:
-            if terminal:
+            if terminal and loop:
                 loop.run_until_complete(mt5_pool.release_terminal(terminal))
+                loop.close()
     
     except Exception as e:
         logger.error(f"Job {job_id} failed: {e}")

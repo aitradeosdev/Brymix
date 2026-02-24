@@ -7,7 +7,8 @@ import {
   Settings, 
   LogOut,
   User,
-  FileText
+  FileText,
+  History
 } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 
@@ -23,6 +24,7 @@ const Navigation: React.FC = () => {
 
   const navItems = [
     { path: '/dashboard', icon: LayoutDashboard, label: 'Dashboard' },
+    { path: '/jobs', icon: History, label: 'Jobs History' },
     { path: '/api-keys', icon: Key, label: 'API Keys' },
     { path: '/analytics', icon: BarChart3, label: 'Analytics' },
     { path: '/documentation', icon: FileText, label: 'Documentation' },

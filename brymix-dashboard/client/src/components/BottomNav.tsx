@@ -1,6 +1,6 @@
 import React from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { Home, BarChart3, Key, FileText, Settings } from 'lucide-react';
+import { Home, BarChart3, Key, FileText, Settings, History } from 'lucide-react';
 
 const BottomNav: React.FC = () => {
   const navigate = useNavigate();
@@ -8,9 +8,9 @@ const BottomNav: React.FC = () => {
 
   const navItems = [
     { icon: Home, label: 'Home', path: '/dashboard' },
-    { icon: BarChart3, label: 'Analytics', path: '/analytics' },
+    { icon: History, label: 'Jobs', path: '/jobs' },
     { icon: Key, label: 'Keys', path: '/api-keys' },
-    { icon: FileText, label: 'Docs', path: '/documentation' },
+    { icon: BarChart3, label: 'Stats', path: '/analytics' },
     { icon: Settings, label: 'Settings', path: '/settings' },
   ];
 
