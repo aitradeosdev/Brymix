@@ -67,6 +67,7 @@ class Metrics(BaseModel):
     max_drawdown_limit: float
     total_trades: int
     trades_under_4min: int
+    currency: str = "USD"
 
 class CheckResponse(BaseModel):
     job_id: str

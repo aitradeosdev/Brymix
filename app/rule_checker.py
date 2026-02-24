@@ -89,7 +89,8 @@ class RuleChecker:
                 max_drawdown_percent=round(max_drawdown, 2),
                 max_drawdown_limit=request.rules.max_drawdown_percent,
                 total_trades=len(positions),
-                trades_under_4min=trades_under_4min
+                trades_under_4min=trades_under_4min,
+                currency=account_info.get("currency", "USD")
             )
             
             # Determine status

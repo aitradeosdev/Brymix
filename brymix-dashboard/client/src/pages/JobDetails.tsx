@@ -38,6 +38,7 @@ interface JobDetailsData {
       max_drawdown_limit: number;
       total_trades: number;
       trades_under_4min: number;
+      currency: string;
     };
     violations: Array<{
       rule: string;
@@ -135,6 +136,16 @@ const JobDetails: React.FC = () => {
 
   const metrics = job.result?.metrics;
   const violations = job.result?.violations || [];
+  const currency = metrics?.currency || 'USD';
+  
+  const formatCurrency = (amount: number) => {
+    return new Intl.NumberFormat('en-US', {
+      style: 'currency',
+      currency: currency,
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2
+    }).format(amount);
+  };
 
   return (
     <div className="space-y-6">
@@ -228,7 +239,7 @@ const JobDetails: React.FC = () => {
                 <p className="text-white/70 text-sm">Initial Balance</p>
                 <DollarSign className="w-5 h-5 text-blue-400" />
               </div>
-              <p className="text-2xl font-bold text-white">${metrics.initial_balance.toLocaleString()}</p>
+              <p className="text-2xl font-bold text-white">{formatCurrency(metrics.initial_balance)}</p>
             </div>
 
             <div className="glass-card">
@@ -236,7 +247,7 @@ const JobDetails: React.FC = () => {
                 <p className="text-white/70 text-sm">Current Balance</p>
                 <DollarSign className="w-5 h-5 text-green-400" />
               </div>
-              <p className="text-2xl font-bold text-white">${metrics.current_balance.toLocaleString()}</p>
+              <p className="text-2xl font-bold text-white">{formatCurrency(metrics.current_balance)}</p>
             </div>
 
             <div className="glass-card">
@@ -296,7 +307,7 @@ const JobDetails: React.FC = () => {
               </div>
               <div>
                 <p className="text-white/60 text-sm">Current Equity</p>
-                <p className="text-2xl font-bold text-white">${metrics.current_equity.toLocaleString()}</p>
+                <p className="text-2xl font-bold text-white">{formatCurrency(metrics.current_equity)}</p>
               </div>
             </div>
           </motion.div>
