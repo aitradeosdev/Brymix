@@ -267,10 +267,10 @@ const JobDetails: React.FC = () => {
                 )}
               </div>
               <p className={`text-2xl font-bold ${metrics.profit_percent >= 0 ? 'text-green-400' : 'text-red-400'}`}>
-                {metrics.profit_percent >= 0 ? '+' : ''}{metrics.profit_percent.toFixed(2)}%
+                {formatCurrency(metrics.current_balance - metrics.initial_balance)}
               </p>
               <p className="text-white/60 text-sm mt-1">
-                Target: {metrics.profit_target_percent}%
+                {metrics.profit_percent >= 0 ? '+' : ''}{metrics.profit_percent.toFixed(2)}% | Target: {metrics.profit_target_percent}%
               </p>
             </div>
 
