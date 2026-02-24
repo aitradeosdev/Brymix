@@ -286,31 +286,42 @@ const Dashboard: React.FC = () => {
         transition={{ delay: 0.7 }}
         className="glass-card"
       >
-        <h3 className="text-xl font-semibold text-white mb-6">Recent Jobs</h3>
+        <div className="flex items-center justify-between mb-6">
+          <h3 className="text-xl font-semibold text-white">Recent Jobs</h3>
+          <button 
+            onClick={() => window.location.href = '/jobs'}
+            className="text-blue-400 hover:text-blue-300 text-sm"
+          >
+            View All →
+          </button>
+        </div>
         {stats.recentJobs.length > 0 ? (
-          <div className="space-y-4">
+          <div className="space-y-3">
             {stats.recentJobs.map((job, index) => (
               <motion.div
                 key={job.id}
                 initial={{ opacity: 0, x: -20 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: 0.8 + index * 0.1 }}
-                className="glass p-4 rounded-xl flex items-center justify-between"
+                onClick={() => window.location.href = `/jobs/${job.job_id}`}
+                className="glass p-4 rounded-xl hover:bg-white/10 cursor-pointer transition-all"
               >
-                <div className="flex items-center space-x-4">
-                  {getStatusIcon(job.status)}
-                  <div>
-                    <p className="text-white font-medium">{job.challenge_id}</p>
-                    <p className="text-white/60 text-sm">User: {job.user_id}</p>
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center space-x-4">
+                    {getStatusIcon(job.status)}
+                    <div>
+                      <p className="text-white font-medium font-mono text-sm">{job.job_id}</p>
+                      <p className="text-white/60 text-xs mt-1">Challenge: {job.challenge_id}</p>
+                    </div>
                   </div>
-                </div>
-                <div className="text-right">
-                  <span className={getStatusClass(job.status)}>
-                    {job.status.charAt(0).toUpperCase() + job.status.slice(1)}
-                  </span>
-                  <p className="text-white/60 text-sm mt-1">
-                    {new Date(job.created_at).toLocaleDateString()}
-                  </p>
+                  <div className="text-right">
+                    <span className={getStatusClass(job.status)}>
+                      {job.status.charAt(0).toUpperCase() + job.status.slice(1)}
+                    </span>
+                    <p className="text-white/60 text-xs mt-1">
+                      {new Date(job.created_at).toLocaleString()}
+                    </p>
+                  </div>
                 </div>
               </motion.div>
             ))}

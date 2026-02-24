@@ -81,19 +81,50 @@ const Documentation: React.FC = () => {
       >
         <h2 className="text-2xl font-semibold text-white mb-4 flex items-center">
           <CheckCircle className="w-6 h-6 text-green-400 mr-2" />
-          Quick Start
+          Integration Overview
         </h2>
         <div className="space-y-4">
-          <div className="glass p-4 rounded-xl">
-            <h3 className="text-white font-medium mb-2">1. Get Your API Credentials</h3>
-            <p className="text-white/70 text-sm mb-3">Create an API key from your dashboard to get:</p>
-            <ul className="text-white/60 text-sm space-y-1 ml-4">
-              <li>• API Key (for authentication)</li>
-              <li>• Webhook Secret (for signature verification)</li>
-            </ul>
+          <p className="text-white/70">Brymix provides automated propfirm challenge validation through a simple REST API. Here's how it works:</p>
+          
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div className="glass p-4 rounded-xl">
+              <div className="text-2xl font-bold text-blue-400 mb-2">1</div>
+              <h3 className="text-white font-medium mb-2">Submit Challenge</h3>
+              <p className="text-white/60 text-sm">Send MT5 credentials and challenge rules to our API</p>
+            </div>
+            <div className="glass p-4 rounded-xl">
+              <div className="text-2xl font-bold text-purple-400 mb-2">2</div>
+              <h3 className="text-white font-medium mb-2">We Validate</h3>
+              <p className="text-white/60 text-sm">Our system checks trade duration, drawdown, and profit targets</p>
+            </div>
+            <div className="glass p-4 rounded-xl">
+              <div className="text-2xl font-bold text-green-400 mb-2">3</div>
+              <h3 className="text-white font-medium mb-2">Get Results</h3>
+              <p className="text-white/60 text-sm">Receive webhook callback with pass/fail status and violations</p>
+            </div>
           </div>
-          <div className="glass p-4 rounded-xl">
-            <h3 className="text-white font-medium mb-2">2. Base URL</h3>
+
+          <div className="glass p-4 rounded-xl bg-blue-500/10 border-blue-500/30">
+            <h3 className="text-white font-medium mb-2">Setup Steps</h3>
+            <ol className="text-white/70 text-sm space-y-2 ml-4">
+              <li>1. Register an account on the dashboard</li>
+              <li>2. Create an API key from the API Keys page</li>
+              <li>3. Save your API Key and Webhook Secret securely</li>
+              <li>4. Implement the API endpoints in your propfirm platform</li>
+              <li>5. Set up webhook endpoint to receive results</li>
+            </ol>
+          </div>
+        </div>
+      </motion.div>
+
+      {/* Base URL */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.15 }}
+        className="glass-card"
+      >
+        <h2 className="text-2xl font-semibold text-white mb-4">Base URL</h2>
             {!showBaseUrl ? (
               <div className="space-y-3">
                 <div className="glass bg-yellow-500/20 border-yellow-500/30 p-3 rounded-xl flex items-center">
@@ -168,6 +199,16 @@ const Documentation: React.FC = () => {
         </h2>
         
         <div className="space-y-6">
+          <div className="glass p-4 rounded-xl bg-purple-500/10 border-purple-500/30">
+            <h3 className="text-white font-medium mb-2">When to Use</h3>
+            <p className="text-white/70 text-sm mb-3">Call this endpoint when:</p>
+            <ul className="text-white/60 text-sm space-y-1 ml-4">
+              <li>• A trader completes their challenge period</li>
+              <li>• You need to validate if challenge rules were followed</li>
+              <li>• Before issuing a funded account</li>
+            </ul>
+          </div>
+
           <div>
             <h3 className="text-white font-medium mb-2">Endpoint</h3>
             <CodeBlock language="http">
@@ -176,7 +217,57 @@ const Documentation: React.FC = () => {
           </div>
 
           <div>
-            <h3 className="text-white font-medium mb-2">Request Body</h3>
+            <h3 className="text-white font-medium mb-2">Request Headers</h3>
+            <CodeBlock language="http">
+{`Content-Type: application/json
+X-API-Key: your_api_key_here`}
+            </CodeBlock>
+          </div>
+
+          <div>
+            <h3 className="text-white font-medium mb-2">Request Body Parameters</h3>
+            <div className="glass p-4 rounded-xl space-y-3">
+              <div>
+                <p className="text-white font-mono text-sm">user_id <span className="text-red-400">*</span></p>
+                <p className="text-white/60 text-xs">Your internal user/trader identifier</p>
+              </div>
+              <div>
+                <p className="text-white font-mono text-sm">challenge_id <span className="text-red-400">*</span></p>
+                <p className="text-white/60 text-xs">Your internal challenge identifier</p>
+              </div>
+              <div>
+                <p className="text-white font-mono text-sm">mt5_login <span className="text-red-400">*</span></p>
+                <p className="text-white/60 text-xs">MT5 account login number</p>
+              </div>
+              <div>
+                <p className="text-white font-mono text-sm">mt5_password <span className="text-red-400">*</span></p>
+                <p className="text-white/60 text-xs">MT5 account password (investor password works)</p>
+              </div>
+              <div>
+                <p className="text-white font-mono text-sm">mt5_server <span className="text-red-400">*</span></p>
+                <p className="text-white/60 text-xs">MT5 broker server name (e.g., "Broker-Live")</p>
+              </div>
+              <div>
+                <p className="text-white font-mono text-sm">initial_balance <span className="text-red-400">*</span></p>
+                <p className="text-white/60 text-xs">Starting balance of the challenge account</p>
+              </div>
+              <div>
+                <p className="text-white font-mono text-sm">rules.max_drawdown_percent <span className="text-red-400">*</span></p>
+                <p className="text-white/60 text-xs">Maximum allowed drawdown (e.g., 10.0 for 10%)</p>
+              </div>
+              <div>
+                <p className="text-white font-mono text-sm">rules.profit_target_percent <span className="text-red-400">*</span></p>
+                <p className="text-white/60 text-xs">Required profit target (e.g., 10.0 for 10%)</p>
+              </div>
+              <div>
+                <p className="text-white font-mono text-sm">callback_url <span className="text-red-400">*</span></p>
+                <p className="text-white/60 text-xs">Your webhook URL to receive results</p>
+              </div>
+            </div>
+          </div>
+
+          <div>
+            <h3 className="text-white font-medium mb-2">Request Example</h3>
             <CodeBlock language="json">
 {`{
   "user_id": "user_123",
@@ -203,6 +294,20 @@ const Documentation: React.FC = () => {
   "message": "Check queued successfully"
 }`}
             </CodeBlock>
+            <p className="text-white/60 text-sm mt-2">Save the job_id to query status or wait for webhook callback</p>
+          </div>
+
+          <div className="glass p-4 rounded-xl bg-yellow-500/10 border-yellow-500/30">
+            <h3 className="text-white font-medium mb-2 flex items-center">
+              <AlertTriangle className="w-4 h-4 text-yellow-400 mr-2" />
+              Important Notes
+            </h3>
+            <ul className="text-white/60 text-sm space-y-2 ml-4">
+              <li>• Processing typically takes 5-30 seconds depending on trade history size</li>
+              <li>• MT5 credentials are never stored, only used for validation</li>
+              <li>• Investor (read-only) passwords are recommended for security</li>
+              <li>• Ensure MT5 account has complete trade history available</li>
+            </ul>
           </div>
 
           <div>
@@ -298,14 +403,38 @@ const Documentation: React.FC = () => {
       >
         <h2 className="text-2xl font-semibold text-white mb-4 flex items-center">
           <Webhook className="w-6 h-6 text-yellow-400 mr-2" />
-          Webhook Integration
+          Webhook Integration (Recommended)
         </h2>
         
         <div className="space-y-6">
+          <div className="glass p-4 rounded-xl bg-green-500/10 border-green-500/30">
+            <h3 className="text-white font-medium mb-2">Why Use Webhooks?</h3>
+            <ul className="text-white/60 text-sm space-y-1 ml-4">
+              <li>• Real-time notifications when validation completes</li>
+              <li>• No need to poll the status endpoint repeatedly</li>
+              <li>• Automatic retry on delivery failure</li>
+              <li>• Secure HMAC signature verification</li>
+            </ul>
+          </div>
+
           <div>
-            <p className="text-white/70 mb-4">
-              When a challenge check completes, we'll send a POST request to your callback_url with the results.
-            </p>
+            <h3 className="text-white font-medium mb-2">Setting Up Your Webhook Endpoint</h3>
+            <p className="text-white/70 text-sm mb-3">Your webhook endpoint should:</p>
+            <ol className="text-white/60 text-sm space-y-2 ml-4">
+              <li>1. Accept POST requests with JSON body</li>
+              <li>2. Verify the X-Signature header (see below)</li>
+              <li>3. Return 200 status code within 5 seconds</li>
+              <li>4. Process the result asynchronously if needed</li>
+            </ol>
+          </div>
+
+          <div>
+            <h3 className="text-white font-medium mb-2">Webhook Headers</h3>
+            <CodeBlock language="http">
+{`Content-Type: application/json
+X-Signature: hmac_sha256_signature_here
+User-Agent: Brymix-Webhook/1.0`}
+            </CodeBlock>
           </div>
 
           <div>

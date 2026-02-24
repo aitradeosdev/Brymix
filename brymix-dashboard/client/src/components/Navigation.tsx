@@ -32,8 +32,8 @@ const Navigation: React.FC = () => {
   ];
 
   return (
-    <div className="glass-nav fixed left-6 top-6 bottom-6 w-64 z-40 hidden md:block">
-      <div className="p-6">
+    <div className="glass-nav fixed left-6 top-6 bottom-6 w-64 z-40 hidden md:flex md:flex-col">
+      <div className="p-6 flex-1 flex flex-col">
         {/* Logo/Brand */}
         <div className="mb-8">
           <h1 className="text-2xl font-bold gradient-text">Brymix</h1>
@@ -46,15 +46,15 @@ const Navigation: React.FC = () => {
             <div className="w-10 h-10 glass rounded-full flex items-center justify-center">
               <User className="w-5 h-5 text-white/70" />
             </div>
-            <div>
-              <p className="text-white font-medium text-sm">{state.user?.name}</p>
-              <p className="text-white/60 text-xs">{state.user?.company}</p>
+            <div className="min-w-0 flex-1">
+              <p className="text-white font-medium text-sm truncate">{state.user?.name}</p>
+              <p className="text-white/60 text-xs truncate">{state.user?.company}</p>
             </div>
           </div>
         </div>
 
         {/* Navigation */}
-        <nav className="space-y-2">
+        <nav className="space-y-2 flex-1 overflow-y-auto">
           {navItems.map((item) => {
             const isActive = location.pathname === item.path;
             return (
@@ -75,7 +75,7 @@ const Navigation: React.FC = () => {
         </nav>
 
         {/* Logout */}
-        <div className="absolute bottom-6 left-6 right-6">
+        <div className="mt-4 pt-4 border-t border-white/10">
           <button
             onClick={handleLogout}
             className="flex items-center space-x-3 px-4 py-3 rounded-xl text-white/70 hover:text-white hover:bg-red-500/20 transition-all duration-200 w-full"
