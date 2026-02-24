@@ -125,48 +125,46 @@ const Documentation: React.FC = () => {
         className="glass-card"
       >
         <h2 className="text-2xl font-semibold text-white mb-4">Base URL</h2>
-            {!showBaseUrl ? (
-              <div className="space-y-3">
-                <div className="glass bg-yellow-500/20 border-yellow-500/30 p-3 rounded-xl flex items-center">
-                  <Lock className="w-4 h-4 text-yellow-400 mr-2" />
-                  <span className="text-yellow-200 text-sm">Base URL is password protected</span>
-                </div>
-                <form onSubmit={handlePasswordSubmit} className="flex gap-2">
-                  <input
-                    type="password"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    placeholder="Enter password"
-                    className="glass-input flex-1 text-sm"
-                    required
-                  />
-                  <button
-                    type="submit"
-                    disabled={loading}
-                    className="glass-button bg-blue-500/20 hover:bg-blue-500/30 px-3 py-1 text-sm flex items-center disabled:opacity-50"
-                  >
-                    <Eye className="w-3 h-3 mr-1" />
-                    {loading ? 'Verifying...' : 'Show'}
-                  </button>
-                </form>
-                {error && (
-                  <p className="text-red-400 text-xs">{error}</p>
-                )}
-              </div>
-            ) : (
-              <div className="space-y-2">
-                <CodeBlock language="text">http://69.10.56.66:8000</CodeBlock>
-                <button
-                  onClick={() => setShowBaseUrl(false)}
-                  className="glass-button bg-gray-500/20 hover:bg-gray-500/30 px-2 py-1 text-xs flex items-center"
-                >
-                  <EyeOff className="w-3 h-3 mr-1" />
-                  Hide
-                </button>
-              </div>
+        {!showBaseUrl ? (
+          <div className="space-y-3">
+            <div className="glass bg-yellow-500/20 border-yellow-500/30 p-3 rounded-xl flex items-center">
+              <Lock className="w-4 h-4 text-yellow-400 mr-2" />
+              <span className="text-yellow-200 text-sm">Base URL is password protected</span>
+            </div>
+            <form onSubmit={handlePasswordSubmit} className="flex gap-2">
+              <input
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                placeholder="Enter password"
+                className="glass-input flex-1 text-sm"
+                required
+              />
+              <button
+                type="submit"
+                disabled={loading}
+                className="glass-button bg-blue-500/20 hover:bg-blue-500/30 px-3 py-1 text-sm flex items-center disabled:opacity-50"
+              >
+                <Eye className="w-3 h-3 mr-1" />
+                {loading ? 'Verifying...' : 'Show'}
+              </button>
+            </form>
+            {error && (
+              <p className="text-red-400 text-xs">{error}</p>
             )}
           </div>
-        </div>
+        ) : (
+          <div className="space-y-2">
+            <CodeBlock language="text">http://69.10.56.66:8000</CodeBlock>
+            <button
+              onClick={() => setShowBaseUrl(false)}
+              className="glass-button bg-gray-500/20 hover:bg-gray-500/30 px-2 py-1 text-xs flex items-center"
+            >
+              <EyeOff className="w-3 h-3 mr-1" />
+              Hide
+            </button>
+          </div>
+        )}
       </motion.div>
 
       {/* Authentication */}
