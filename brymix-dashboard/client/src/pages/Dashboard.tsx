@@ -305,7 +305,10 @@ const Dashboard: React.FC = () => {
                 initial={{ opacity: 0, x: -20 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: 0.8 + index * 0.1 }}
-                onClick={() => navigate(`/jobs/${job.job_id}`)}
+                onClick={() => {
+                  console.log('Navigating to job:', job.job_id);
+                  if (job.job_id) navigate(`/jobs/${job.job_id}`);
+                }}
                 className="glass p-4 rounded-xl hover:bg-white/10 cursor-pointer transition-all"
               >
                 <div className="flex items-center justify-between">
