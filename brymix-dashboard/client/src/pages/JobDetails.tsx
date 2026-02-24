@@ -139,7 +139,14 @@ const JobDetails: React.FC = () => {
   const currency = metrics?.currency || 'USD';
   
   const formatCurrency = (amount: number) => {
-    return new Intl.NumberFormat('en-US', {
+    const locales: { [key: string]: string } = {
+      'USD': 'en-US',
+      'EUR': 'de-DE',
+      'GBP': 'en-GB',
+      'NGN': 'en-NG'
+    };
+    const locale = locales[currency] || 'en-US';
+    return new Intl.NumberFormat(locale, {
       style: 'currency',
       currency: currency,
       minimumFractionDigits: 2,
