@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { motion } from 'framer-motion';
+import { useNavigate } from 'react-router-dom';
 import { 
   Activity, 
   CheckCircle, 
@@ -29,6 +30,7 @@ interface DashboardStats {
 const Dashboard: React.FC = () => {
   const { state } = useAuth();
   const { selectedApiKey } = useApiKey();
+  const navigate = useNavigate();
   const [stats, setStats] = useState<DashboardStats>({
     totalJobs: 0,
     completedJobs: 0,
@@ -289,7 +291,7 @@ const Dashboard: React.FC = () => {
         <div className="flex items-center justify-between mb-6">
           <h3 className="text-xl font-semibold text-white">Recent Jobs</h3>
           <button 
-            onClick={() => window.location.href = '/jobs'}
+            onClick={() => navigate('/jobs')}
             className="text-blue-400 hover:text-blue-300 text-sm"
           >
             View All →
@@ -303,7 +305,7 @@ const Dashboard: React.FC = () => {
                 initial={{ opacity: 0, x: -20 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: 0.8 + index * 0.1 }}
-                onClick={() => window.location.href = `/jobs/${job.job_id}`}
+                onClick={() => navigate(`/jobs/${job.job_id}`)}
                 className="glass p-4 rounded-xl hover:bg-white/10 cursor-pointer transition-all"
               >
                 <div className="flex items-center justify-between">
