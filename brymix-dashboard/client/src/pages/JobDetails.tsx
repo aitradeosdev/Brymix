@@ -18,7 +18,7 @@ import {
 import { useAuth } from '../contexts/AuthContext';
 import axios from 'axios';
 
-interface JobDetails {
+interface JobDetailsData {
   job_id: string;
   user_id: string;
   challenge_id: string;
@@ -51,7 +51,7 @@ const JobDetails: React.FC = () => {
   const { jobId } = useParams<{ jobId: string }>();
   const navigate = useNavigate();
   const { state } = useAuth();
-  const [job, setJob] = useState<JobDetails | null>(null);
+  const [job, setJob] = useState<JobDetailsData | null>(null);
   const [loading, setLoading] = useState(true);
 
   const API_URL = '/api';

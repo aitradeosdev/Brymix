@@ -88,6 +88,7 @@ const JobsHistory: React.FC = () => {
 
   useEffect(() => {
     fetchJobs(1);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedApiKey, statusFilter]);
 
   const handleSearch = () => {
