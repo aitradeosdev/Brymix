@@ -34,7 +34,8 @@ class WebhookClient:
             # Send request
             headers = {
                 "Content-Type": "application/json",
-                "X-Signature": signature
+                "X-Signature": signature,
+                "User-Agent": "Brymix-Webhook/1.0"
             }
             
             async with httpx.AsyncClient(timeout=30.0) as client:
